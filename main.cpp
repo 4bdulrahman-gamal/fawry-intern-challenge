@@ -1,7 +1,10 @@
+// E-Commerce System Task
+// This program simulates a simple e-commerce system with products, customers, and a shopping cart.
 #include <iostream>
 #include <vector>
 using namespace std;
 
+// base class
 class Product {
 private:
   int quantity;
@@ -12,6 +15,7 @@ private:
   bool shippable;
 
 public:
+  // Constructor with default values
   Product(int q, string n = "name", double p = 0.00, int w = 0, bool e = false, bool s = false) {
     name = n;
     price = p;
@@ -45,6 +49,7 @@ public:
     return quantity;
   }
 
+  // Reduce the quantity of the product after purchase
   void reduceQuantity(int amount) {
   if (amount > quantity) {
     throw std::runtime_error("Not enough stock for " + name);
@@ -53,6 +58,7 @@ public:
 }
 };
 
+// Customer class
 class Customer {
 private:
   string name;
@@ -81,6 +87,7 @@ public:
   }
 };
 
+// Derived product classes for specific product types
 class Cheese : public Product {
   public:
     Cheese(int q = 0, string n = "cheese    ", double p = 100, int w = 200, bool e = true, bool s = true)
@@ -105,11 +112,13 @@ class ScratchCard : public Product {
       : Product(q, n, p, w, e, s) {}
 };
 
-
+// Shopping cart class
 class cart {
 public:
-  vector<pair<Product*, int>> items;
-  int count = 0;
+  vector<pair<Product*, int>> items; // Each item: pointer to Product and quantity
+  int count = 0; // Number of different products in the cart
+
+  // Add a product to the cart
   void add(Product* product, int quantity) {
     if (quantity > product->getQuantity()) {
       cout << "Out of stock" << endl;
@@ -119,6 +128,7 @@ public:
 		}
   }
 
+  // Remove a product from the cart
   void remove(Product* product) {
     for (auto it = items.begin(); it != items.end(); ++it) {
       if (it->first == product) {
@@ -129,6 +139,7 @@ public:
     }
   }
 
+  // Checkout process
   void checkout(double balance) {
     if (count < 1) {
       cout << "The cart is empty!" << endl; 
@@ -166,6 +177,7 @@ public:
     double totalPriceAfterTax = totalPrice + 30;
     cout << "Amount " << totalPriceAfterTax << " EGP" << endl;
 
+    // Check if customer has enough balance
     if (balance - totalPriceAfterTax < 0) {
       cout << "\nSorry, your balance is insufficient." << endl;
       cout << "Purchase not completed :(" << endl;
@@ -180,17 +192,19 @@ public:
 int main() {
   cart cart;
   Customer cust;
-  cust.setBalance(10000);
+  cust.setBalance(10000); // initial balance
 
+  // Create products
   Product* tv = new TV(5);
   Product* cheese = new Cheese(5);
   Product* biscuits = new Biscuits(5);
   Product* scratchCard = new ScratchCard(5);
 
-  
+  // Add products to cart
   cart.add(tv, 3);
   cart.add(cheese, 2);
   cart.add(scratchCard, 1);
 
+  // checkout
   cart.checkout(cust.getBalance());
 }
